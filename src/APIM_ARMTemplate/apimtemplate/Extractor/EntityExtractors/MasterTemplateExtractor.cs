@@ -19,13 +19,14 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
             FileNames fileNames,
             string apiFileName,
             string linkedTemplatesUrlQueryString,
-            string policyXMLBaseUrl)
+            string policyXMLBaseUrl,
+            string policyXMLUrlQueryString)
         {
             // create empty template
             Template masterTemplate = GenerateEmptyTemplate();
 
             // add parameters
-            masterTemplate.parameters = this.CreateMasterTemplateParameters(true, linkedTemplatesUrlQueryString, policyXMLBaseUrl);
+            masterTemplate.parameters = this.CreateMasterTemplateParameters(true, linkedTemplatesUrlQueryString, policyXMLBaseUrl, policyXMLUrlQueryString);
 
             // add deployment resources that links to all resource files
             List<TemplateResource> resources = new List<TemplateResource>();
@@ -131,7 +132,8 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                     parameters = new Dictionary<string, TemplateParameterProperties>
                     {
                         { "ApimServiceName", new TemplateParameterProperties(){ value = "[parameters('ApimServiceName')]" } },
-                        { "PolicyXMLBaseUrl", new TemplateParameterProperties(){ value = "[parameters('PolicyXMLBaseUrl')]" } }
+                        { "PolicyXMLBaseUrl", new TemplateParameterProperties(){ value = "[parameters('PolicyXMLBaseUrl')]" } },
+                        { "PolicyXMLUrlQueryString", new TemplateParameterProperties(){ value = "[parameters('PolicyXMLUrlQueryString')]" } }
                     }
                 },
                 dependsOn = dependsOn
@@ -139,7 +141,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
             return masterTemplateResource;
         }
 
-        public Dictionary<string, TemplateParameterProperties> CreateMasterTemplateParameters(bool linked, string linkedTemplatesUrlQueryString, string policyXMLBaseUrl)
+        public Dictionary<string, TemplateParameterProperties> CreateMasterTemplateParameters(bool linked, string linkedTemplatesUrlQueryString, string policyXMLBaseUrl, string policyXMLUrlQueryString)
         {
             // used to create the parameter metatadata, etc (not value) for use in file with resources
             // add parameters with metatdata properties
@@ -190,18 +192,31 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                     type = "string"
                 };
                 parameters.Add("PolicyXMLBaseUrl", policyTemplateBaseUrlProperties);
+                // add policyXMLUrlQueryString parameter if provided and if the user has provided a policyXMLBaseUrl
+                if (policyXMLUrlQueryString != null)
+                {
+                    TemplateParameterProperties policyXMLUrlQueryStringProperties = new TemplateParameterProperties()
+                    {
+                        metadata = new TemplateParameterMetadata()
+                        {
+                            description = "Query string for the URL of the policy XML files remote storage"
+                        },
+                        type = "string"
+                    };
+                    parameters.Add("PolicyXMLUrlQueryString", policyXMLUrlQueryStringProperties);
+                }
             }
             return parameters;
         }
 
         // this function will create master / parameter templates for deploying API revisions
-        public Template CreateSingleAPIRevisionsMasterTemplate(List<string> revList, string currentRev, string linkedTemplatesUrlQueryString, string policyXMLBaseUrl, FileNames fileNames)
+        public Template CreateSingleAPIRevisionsMasterTemplate(List<string> revList, string currentRev, string linkedTemplatesUrlQueryString, string policyXMLBaseUrl, FileNames fileNames, string policyXMLUrlQueryString)
         {
             // create empty template
             Template masterTemplate = GenerateEmptyTemplate();
 
             // add parameters
-            masterTemplate.parameters = this.CreateMasterTemplateParameters(true, linkedTemplatesUrlQueryString, policyXMLBaseUrl);
+            masterTemplate.parameters = this.CreateMasterTemplateParameters(true, linkedTemplatesUrlQueryString, policyXMLBaseUrl, policyXMLUrlQueryString);
 
             // add deployment resources that links to all resource files
             List<TemplateResource> resources = new List<TemplateResource>();
@@ -235,7 +250,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
             return revDependsOn.ToArray();
         }
 
-        public Template CreateMasterTemplateParameterValues(string apimServiceName, string linkedTemplatesBaseUrl, string linkedTemplatesUrlQueryString, string policyXMLBaseUrl)
+        public Template CreateMasterTemplateParameterValues(string apimServiceName, string linkedTemplatesBaseUrl, string linkedTemplatesUrlQueryString, string policyXMLBaseUrl, string policyXMLUrlQueryString)
         {
             // used to create the parameter values for use in parameters file
             // create empty template
@@ -272,6 +287,15 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                     value = policyXMLBaseUrl
                 };
                 parameters.Add("PolicyXMLBaseUrl", policyTemplateBaseUrlProperties);
+                // add policyXMLUrlQueryString parameter if provided and if the user has provided a policyXMLBaseUrl
+                if (policyXMLUrlQueryString != null)
+                {
+                    TemplateParameterProperties policyXMLUrlQueryStringProperties = new TemplateParameterProperties()
+                    {
+                        value = policyXMLUrlQueryString
+                    };
+                    parameters.Add("PolicyXMLUrlQueryString", policyXMLUrlQueryStringProperties);
+                }
             }
             masterTemplate.parameters = parameters;
             return masterTemplate;

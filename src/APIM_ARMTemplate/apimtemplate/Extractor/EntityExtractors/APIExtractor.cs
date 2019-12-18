@@ -256,7 +256,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                         this.fileWriter.CreateFolderIfNotExists(policyFolder);
                         this.fileWriter.WriteXMLToFile(policyXMLContent, String.Concat(policyFolder, operationPolicyFileName));
                         operationPolicyResource.properties.format = "rawxml-link";
-                        operationPolicyResource.properties.value = $"[concat(parameters('PolicyXMLBaseUrl'), '{operationPolicyFileName}')]";
+                        operationPolicyResource.properties.value = $"[concat(parameters('PolicyXMLBaseUrl'), '{operationPolicyFileName}', parameters('PolicyXMLUrlQueryString'))]";
                     }
 
                     templateResources.Add(operationPolicyResource);
@@ -310,7 +310,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                     this.fileWriter.CreateFolderIfNotExists(policyFolder);
                     this.fileWriter.WriteXMLToFile(policyXMLContent, String.Concat(policyFolder, apiPolicyFileName));
                     apiPoliciesResource.properties.format = "rawxml-link";
-                    apiPoliciesResource.properties.value = $"[concat(parameters('PolicyXMLBaseUrl'), '{apiPolicyFileName}')]";
+                    apiPoliciesResource.properties.value = $"[concat(parameters('PolicyXMLBaseUrl'), '{apiPolicyFileName}', parameters('PolicyXMLUrlQueryString'))]";
                 }
                 templateResources.Add(apiPoliciesResource);
             }
@@ -402,7 +402,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
         public async Task<Template> GenerateAPIRevisionTemplateAsync(string currentRevision, List<string> revList, string apiName, Extractor exc)
         {
             // generate apiTemplate
-            Template armTemplate = GenerateEmptyTemplateWithParameters(exc.policyXMLBaseUrl);
+            Template armTemplate = GenerateEmptyTemplateWithParameters(exc.policyXMLBaseUrl, exc.policyXMLUrlQueryString);
             List<TemplateResource> templateResources = new List<TemplateResource>();
             Console.WriteLine("{0} APIs found ...", revList.Count().ToString());
 
@@ -540,7 +540,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                         this.fileWriter.CreateFolderIfNotExists(policyFolder);
                         this.fileWriter.WriteXMLToFile(policyXMLContent, String.Concat(policyFolder, operationPolicyFileName));
                         operationPolicyResource.properties.format = "rawxml-link";
-                        operationPolicyResource.properties.value = $"[concat(parameters('PolicyXMLBaseUrl'), '{operationPolicyFileName}')]";
+                        operationPolicyResource.properties.value = $"[concat(parameters('PolicyXMLBaseUrl'), '{operationPolicyFileName}', parameters('PolicyXMLUrlQueryString'))]";
                     }
 
                     templateResources.Add(operationPolicyResource);
@@ -594,7 +594,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                     this.fileWriter.CreateFolderIfNotExists(policyFolder);
                     this.fileWriter.WriteXMLToFile(policyXMLContent, String.Concat(policyFolder, apiPolicyFileName));
                     apiPoliciesResource.properties.format = "rawxml-link";
-                    apiPoliciesResource.properties.value = $"[concat(parameters('PolicyXMLBaseUrl'), '{apiPolicyFileName}')]";
+                    apiPoliciesResource.properties.value = $"[concat(parameters('PolicyXMLBaseUrl'), '{apiPolicyFileName}', parameters('PolicyXMLUrlQueryString'))]";
                 }
                 templateResources.Add(apiPoliciesResource);
             }
@@ -682,10 +682,10 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
             return templateResources;
         }
 
-        public async Task<Template> GenerateAPIsARMTemplateAsync(string apimname, string resourceGroup, string singleApiName, List<string> multipleApiNames, string policyXMLBaseUrl, string fileFolder)
+        public async Task<Template> GenerateAPIsARMTemplateAsync(string apimname, string resourceGroup, string singleApiName, List<string> multipleApiNames, string policyXMLBaseUrl, string fileFolder, string policyXMLUrlQueryString)
         {
             // initialize arm template
-            Template armTemplate = GenerateEmptyTemplateWithParameters(policyXMLBaseUrl);
+            Template armTemplate = GenerateEmptyTemplateWithParameters(policyXMLBaseUrl, policyXMLUrlQueryString);
             List<TemplateResource> templateResources = new List<TemplateResource>();
 
             // when extract single API

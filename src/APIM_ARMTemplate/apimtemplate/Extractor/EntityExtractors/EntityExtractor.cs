@@ -35,7 +35,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
             return armTemplate;
         }
 
-        public Template GenerateEmptyTemplateWithParameters(string policyXMLBaseUrl)
+        public Template GenerateEmptyTemplateWithParameters(string policyXMLBaseUrl, string policyXMLUrlQueryString)
         {
             Template armTemplate = GenerateEmptyTemplate();
             armTemplate.parameters = new Dictionary<string, TemplateParameterProperties> { { "ApimServiceName", new TemplateParameterProperties() { type = "string" } } };
@@ -46,6 +46,14 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                     type = "string"
                 };
                 armTemplate.parameters.Add("PolicyXMLBaseUrl", policyTemplateBaseUrlParameterProperties);
+                if (policyXMLUrlQueryString != null)
+                {
+                    TemplateParameterProperties policyXMLUrlQueryStringProperties = new TemplateParameterProperties()
+                    {
+                        type = "string"
+                    };
+                    armTemplate.parameters.Add("PolicyXMLUrlQueryString", policyXMLUrlQueryStringProperties);
+                }
             }
             return armTemplate;
         }
