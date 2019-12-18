@@ -11,7 +11,6 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
         public string linkedTemplatesBaseUrl { get; set; }
         public string linkedTemplatesUrlQueryString { get; set; }
         public string policyXMLBaseUrl { get; set; }
-        public string policyXMLUrlQueryString { get; set; }
         public string splitAPIs { get; set; }
         public string apiVersionSetName { get; set; }
         public string includeAllRevisions { get; set; }
@@ -26,7 +25,6 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
         public string linkedTemplatesBaseUrl { get; private set; }
         public string linkedTemplatesUrlQueryString { get; private set; }
         public string policyXMLBaseUrl { get; private set; }
-        public string policyXMLUrlQueryString { get; private set; }
         public string apiVersionSetName { get; private set; }
         public bool includeAllRevisions { get; private set; }
 
@@ -38,8 +36,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
             this.fileFolder = dirName;
             this.linkedTemplatesBaseUrl = exc.linkedTemplatesBaseUrl;
             this.linkedTemplatesUrlQueryString = exc.linkedTemplatesUrlQueryString;
-            this.policyXMLBaseUrl = (string.IsNullOrEmpty(exc.policyXMLBaseUrl)) ? this.linkedTemplatesBaseUrl : exc.policyXMLBaseUrl;
-            this.policyXMLUrlQueryString = (string.IsNullOrEmpty(exc.policyXMLUrlQueryString)) ? this.linkedTemplatesUrlQueryString : exc.policyXMLUrlQueryString;
+            this.policyXMLBaseUrl = exc.policyXMLBaseUrl;
             this.apiVersionSetName = exc.apiVersionSetName;
             this.includeAllRevisions = checkIncludeRevision(exc.includeAllRevisions);
         }
@@ -52,8 +49,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
             this.fileFolder = exc.fileFolder;
             this.linkedTemplatesBaseUrl = exc.linkedTemplatesBaseUrl;
             this.linkedTemplatesUrlQueryString = exc.linkedTemplatesUrlQueryString;
-            this.policyXMLBaseUrl = (string.IsNullOrEmpty(exc.policyXMLBaseUrl)) ? this.linkedTemplatesBaseUrl : exc.policyXMLBaseUrl;
-            this.policyXMLUrlQueryString = (string.IsNullOrEmpty(exc.policyXMLUrlQueryString)) ? this.linkedTemplatesUrlQueryString : exc.policyXMLUrlQueryString;
+            this.policyXMLBaseUrl = exc.policyXMLBaseUrl;
             this.apiVersionSetName = exc.apiVersionSetName;
             this.includeAllRevisions = checkIncludeRevision(exc.includeAllRevisions);
         }
