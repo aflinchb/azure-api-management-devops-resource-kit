@@ -76,6 +76,7 @@ namespace Microsoft.Azure.Management.ApiManagement.ArmTemplates.Extract
                         }
                         await ExtractorUtils.GenerateTemplates(new Extractor(extractorConfig), singleApiName, null, fileNameGenerator, fileNames, fileWriter, null);
                     }
+                    // Console.Writeline - these need to output to std out ? 
                     Console.WriteLine("Templates written to output location");
                     Console.WriteLine("Press any key to exit process:");
 #if DEBUG
